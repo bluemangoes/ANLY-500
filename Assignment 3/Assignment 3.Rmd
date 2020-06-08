@@ -1,0 +1,68 @@
+---
+title: "Assignment 3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+getwd() 
+list.files("dataSets") 
+states.data <- readRDS("dataSets/states.rds") 
+
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+
+tail(states.info, 8)
+sts.ex.sat <- subset(states.data, select = c("expense", "csat"))
+summary(sts.ex.sat)
+
+cor(sts.ex.sat)
+
+plot(sts.ex.sat)
+
+sat.mod <- lm(csat ~ expense, 
+              data=states.data) 
+
+summary(sat.mod) 
+
+summary(lm(csat ~ expense + percent, data = states.data))
+
+class(sat.mod)
+names(sat.mod)
+methods(class = class(sat.mod))[1:9]
+
+confint(sat.mod)
+
+par(mar = c(4, 4, 2, 2), mfrow = c(1, 2)) 
+plot(sat.mod, which = c(1, 2))
+
+sat.voting.mod <-  lm(csat ~ expense + house + senate,
+                      data = na.omit(states.data))
+sat.mod <- update(sat.mod, data=na.omit(states.data))
+
+anova(sat.mod, sat.voting.mod)
+coef(summary(sat.voting.mod))
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
